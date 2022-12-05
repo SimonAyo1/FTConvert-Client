@@ -23,6 +23,7 @@ import {
   TableContainer,
   TablePagination,
   Alert,
+  CircularProgress
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -340,7 +341,9 @@ export default function Payments() {
         </MenuItem>
       </Popover>
     </>
-  ) : (
-    'Loading Data ...'
-  );
+  ) 
+   : (
+    <CircularProgress color="secondary" />
+  )
+
 }

@@ -6,6 +6,7 @@ import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox, CircularP
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
+import Label from '../../../components/label/Label';
 
 // ----------------------------------------------------------------------
 
@@ -21,24 +22,35 @@ export default function LoginForm() {
     const authentication = getAuth();
 
     await signInWithEmailAndPassword(authentication, email, password)
-      .then((response) => {
+      .then(() => {
         setIsLoading(false);
 
-        console.log(response);
-
-        navigate('/dashboard', { replace: true });
+        navigate('/dashboard');
       })
-
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
         setIsLoading(false);
-        setError(error);
+        console.log(err.code);
+        switch (err.code) {
+          case 'auth/network-request-failed':
+            setError("Can't connect to the internet !");
+            break;
+          case 'auth/Invalid-email':
+          case 'auth/user-disabled':
+          case 'auth/user-not-found':
+            setError('Invalid user credentials');
+            break;
+          case 'auth/wrong-password':
+            setError('Wrong password');
+            break;
+          default:
+        }
       });
   };
 
   return (
     <>
       <Stack spacing={3}>
+        {error && <Label color="error">{error}</Label>}
         <TextField name="email" label="Email address" onChange={(e) => setEmail(e.target.value)} />
 
         <TextField
@@ -60,7 +72,12 @@ export default function LoginForm() {
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
         <Checkbox name="remember" label="Remember me" />
-        <Link variant="subtitle2" underline="hover">
+        <Link
+          variant="subtitle2"
+          underline="hover"
+          onClick={() => navigate('/auth/reset-password', { replace: true })}
+          style={{ cursor: 'pointer' }}
+        >
           Forgot password?
         </Link>
       </Stack>
@@ -73,9 +90,8 @@ export default function LoginForm() {
         disabled={isLoading}
         onClick={handleLogin}
       >
-        {isLoading ? <CircularProgress color="warning" /> : 'Login'}
+        {isLoading ? <CircularProgress color="secondary" /> : 'Login'}
       </LoadingButton>
-      {error && <Alert color="error">{error}</Alert>}
     </>
   );
 }

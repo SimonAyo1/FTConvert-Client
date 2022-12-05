@@ -3,16 +3,15 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
-import BlogPage from './pages/BlogPage';
-import UserPage from './pages/UserPage';
+
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import Payments from './pages/Payments';
 import Swap from './pages/Swap';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
+import ForgotPassword from './sections/auth/login/ForgotPassword';
 
 
 // ----------------------------------------------------------------------
@@ -35,14 +34,18 @@ export default function Router() {
       element: <LoginPage />,
     },
     {
+      path: 'auth/reset-password',
+      element: <ForgotPassword />,
+    },
+    {
       path: 'auth/register',
-      element:  <Register />,
+      element: <Register />,
     },
 
     {
       element: <SimpleLayout />,
       children: [
-        { element: <Navigate to="/auth/register" />, index: true },
+        { element: <Navigate to="/dashboard" />, index: true },
         { path: '404', element: <Page404 /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],

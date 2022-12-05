@@ -1,19 +1,72 @@
 import { Helmet } from 'react-helmet-async';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
-
+import { useContext, useState } from 'react';
+import { doc, updateDoc } from 'firebase/firestore';
+import { updateEmail } from 'firebase/auth';
+import { Link } from 'react-router-dom';
 // @mui
-import { Stack, Popover, MenuItem, Container, Typography, Grid } from '@mui/material';
+import { Stack, Container, Typography, Grid, Button, CircularProgress } from '@mui/material';
 
 // components
 
 import Iconify from '../components/iconify';
 import '../styles/settings.css';
+import { db } from '../firebase-config';
+import { AuthContext } from '../context/AuthContext';
+
+
+
 // sections
 
 export default function Settings() {
-      const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user.user);
   const [open, setOpen] = useState(null);
+  const userRef = doc(db, 'users', `${user.dId}`);
+  const [companyName, setCompanyName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [newPassword, setNewPassword] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUpdatingCN, setIsUpdatingCN] = useState(false);
+  const [isUpdatingEmail, setIsUpdatingEmail] = useState(false);
+  const {currentUser} = useContext(AuthContext)
+  const handleCompanyNameUpdate = async () => {
+    setIsUpdatingCN(true);
+    if (companyName === null) {
+      alert('Please enter a name');
+      setIsUpdatingCN(false);
+    } else {
+      await updateDoc(userRef, {
+        company: companyName,
+      }).then(() => {
+        setIsUpdatingCN(false);
+        alert('Successfully Updated !');
+      });
+    }
+  };
+  const handleEmailUpdate = async () => {
+    setIsUpdatingEmail(true);
+     if (email === null) {
+      alert('Please enter a new email');
+      setIsUpdatingCN(false);
+    } else {
+      await updateDoc(userRef, {
+        email
+      }).then(() => {
+      
+      });
+      await updateEmail(currentUser, email)
+      .then(() => {
+        setIsUpdatingEmail(false);
+        alert('Successfully Updated !');
+      })
+      .catch((error) => {
+        setIsUpdatingEmail(false);
+        console.log(error)
+        // An error occurred
+        // ...
+      });
+  }
+}
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -54,7 +107,9 @@ export default function Settings() {
                   <input type="text" value={user.id} className="a-input" />
                 </div>
                 <span style={{ marginTop: 10 }}>
-                  <a href={`https://pay-tfconvert.vercel.app/${user.id}/a/b`}>https://pay-tfconvert.vercel.app/{user.id}/a/b</a>
+                  <a href={`https://pay-tfconvert.vercel.app/${user.id}/a/b`}>
+                    https://pay-tfconvert.vercel.app/{user.id}/a/b
+                  </a>
                 </span>
               </fieldset>
             </article>
@@ -63,58 +118,51 @@ export default function Settings() {
 
               <fieldset>
                 <span>Company Name</span>
-                <input type="text" value={user.company_name} className="a-input" />
+                <input
+                  type="text"
+                  placeholder={user.company_name}
+                  className="a-input"
+                  onChange={(e) => setCompanyName(e.target.value)}
+                />
+                <br />
+                <Button
+                  variant="outlined"
+                  size="small"
+                  style={{ width: '10%', alignSelf: 'flex-end' }}
+                  onClick={handleCompanyNameUpdate}
+                >
+                  {isUpdatingCN ? <CircularProgress color="secondary" size={20} /> : 'Update'}
+                </Button>
               </fieldset>
               <fieldset>
                 <span>Company email</span>
-                <input type="text" value={user.email} className="a-input" />
+                <input
+                  type="text"
+                  placeholder={user.email}
+                  className="a-input"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <br />
+                <Button
+                  variant="outlined"
+                  size="small"
+                  style={{ width: '10%', alignSelf: 'flex-end' }}
+                  onClick={handleEmailUpdate}
+                >
+                  {isUpdatingEmail ? <CircularProgress color="secondary" size={20} /> : 'Update'}
+                </Button>
               </fieldset>
             </article>
             <article className="grid gap-big">
-              <div className="title">Change Password</div>
-              <div className="grid col-2 gap-medium">
-                <fieldset>
-                  <span>Current Password</span>
-                  <input type="text" placeholder="" className="a-input" />
-                </fieldset>
-                <fieldset>
-                  <span>New Password</span>
-                  <input type="text" className="a-input" />
-                </fieldset>
-              </div>
+              <Link to="/auth/reset-password" style={{ textDecoration: 'none' }}>
+                <Button variant="contained" style={{ width: '30%' }}>
+                  Change Password
+                </Button>
+              </Link>
             </article>
           </article>
         </Grid>
       </Container>
-
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Popover>
     </>
   );
 }

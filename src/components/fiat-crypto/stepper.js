@@ -4,7 +4,7 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import { v4 as uuidv4 } from 'uuid';
 import { TextField, FormControl, InputLabel, Select, MenuItem, CircularProgress, Alert } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { collection, addDoc } from 'firebase/firestore';
@@ -26,7 +26,7 @@ export default function FTCStepper() {
     setIsLoading(true);
     if (user.balance !== 0) {
       await addDoc(collection(db, 'users_crypto_fiat_requests'), {
-        id: '839',
+        id: uuidv4().slice(0,10),
         userId: user.id,
         amount,
         company: user.company_name,

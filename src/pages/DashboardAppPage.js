@@ -1,89 +1,23 @@
 import { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { useSelector, useDispatch } from 'react-redux';
-
+import { useSelector } from 'react-redux';
 
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
-import { AuthContext } from '../context/AuthContext';
-import { db } from '../firebase-config';
-import { userActions } from '../store/user/userSlice';
-// components
-import Iconify from '../components/iconify';
+import { Grid, Container, Typography, CircularProgress } from '@mui/material';
+
 // sections
-import {
-  AppTasks,
-  AppNewsUpdate,
-  AppOrderTimeline,
-  AppCurrentVisits,
-  AppWebsiteVisits,
-  AppTrafficBySite,
-  AppWidgetSummary,
-  AppCurrentSubject,
-  AppConversionRates,
-} from '../sections/@dashboard/app';
+import { AppNewsUpdate, AppCurrentVisits, AppWebsiteVisits, AppWidgetSummary } from '../sections/@dashboard/app';
 
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
- const dispatch = useDispatch();
-  const { currentUser } = useContext(AuthContext);
-  
-  const [isLoading , setIsLoading] = useState(true)
-  
- const [data , setData] = useState({
-  id: null,
-  company_name: null,
-  email: null,
-  payment_url: null,
-  balance: null,
-  wallets: []
- })
- const fetchData = async (id) => {
-   const req = query(collection(db, 'users'), where('userId', '==', `${id}`));
-   const querySnapshot = await getDocs(req).catch((e) => {
-     console.log(e);
-   });
-   querySnapshot.forEach((doc) => {
-     // doc.data() is never undefined for query doc snapshots
-    
-     setData({
-       id: doc.data().userId,
-       company_name: doc.data().company,
-       email: doc.data().email,
-       payment_url: doc.data().payment_url,
-       balance: doc.data().balance,
-       wallets: doc.data().wallets,
-     });
-     dispatch(
-       userActions.addUser({
-         id: doc.data().userId,
-         company_name: doc.data().company,
-         email: doc.data().email,
-         payment_url: doc.data().payment_url,
-         balance: doc.data().balance,
-         wallets: doc.data().wallets,
-       })
-     );
-     console.log(doc.data());
-     console.log('data', data.balance);
-     setIsLoading(false);
-   });
- };
-
-useEffect(() => {
-  fetchData(currentUser.uid);
-}, []);
-    
-
   const theme = useTheme();
+   const user = useSelector((state) => state.user.user);
 
-
-  return !isLoading && currentUser ? (
+  return  (
     <>
       <Helmet>
         <title> Dashboard | TFConvert </title>
@@ -91,22 +25,22 @@ useEffect(() => {
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back {data.company_name}
+          Hi, Welcome back {user.company_name}
         </Typography>
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
-            <AppWidgetSummary title="Balance" total={`${data.balance}`} icon={'mdi:money'} />
+            <AppWidgetSummary title="Balance" total={`${user.balance}`} icon={'mdi:money'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={4}>
-            <AppWidgetSummary title="Customers" total={`${data.customer}`} icon={'ic:baseline-people-alt'} />
+            <AppWidgetSummary title="Customers" total={`${user.customer}`} icon={'ic:baseline-people-alt'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={4}>
             <AppWidgetSummary
               title="Wallets"
-              total={`${data.wallets.length}`}
+              total={`${user.wallets.length}`}
               icon={'material-symbols:account-balance-wallet'}
             />
           </Grid>
@@ -184,7 +118,6 @@ useEffect(() => {
         </Grid>
       </Container>
     </>
-  ) : (
-    'Loading data...'
-  );
+  )
+   
 }
