@@ -45,14 +45,15 @@ export default function MainLayout() {
 
     const [isLoading, setIsLoading] = useState(true);
   
-    const [data, setData] = useState({
-      id: null,
-      company_name: null,
-      email: null,
-      payment_url: null,
-      balance: null,
-      wallets: [],
-    });
+    // const [data, setData] = useState({
+    //   id: null,
+    //   company_name: null,
+    //   email: null,
+    //   payment_url: null,
+    //   balance: null,
+    //   wallets: [],
+    //   isDisabled: null
+    // });
     const fetchData = async (id) => {
       const req = query(collection(db, 'users'), where('userId', '==', `${id}`));
       const querySnapshot = await getDocs(req).catch((e) => {
@@ -61,14 +62,15 @@ export default function MainLayout() {
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
 
-        setData({
-          id: doc.data().userId,
-          company_name: doc.data().company,
-          email: doc.data().email,
-          payment_url: doc.data().payment_url,
-          balance: doc.data().balance,
-          wallets: doc.data().wallets,
-        });
+        // setData({
+        //   id: doc.data().userId,
+        //   company_name: doc.data().company,
+        //   email: doc.data().email,
+        //   payment_url: doc.data().payment_url,
+        //   balance: doc.data().balance,
+        //   wallets: doc.data().wallets,
+        //   isDisabled: doc.data().isDisabled,
+        // });
         dispatch(
           userActions.addUser({
             id: doc.data().userId,
@@ -77,11 +79,12 @@ export default function MainLayout() {
             payment_url: doc.data().payment_url,
             balance: doc.data().balance,
             wallets: doc.data().wallets,
-            dId: doc.id
+            dId: doc.id,
+            isDisabled: doc.data().isDisabled,
           })
         );
         console.log(doc.data());
-        console.log('data', data.balance);
+       
         setIsLoading(false);
       });
     };

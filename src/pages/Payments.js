@@ -23,8 +23,9 @@ import {
   TableContainer,
   TablePagination,
   Alert,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
+import { useSelector } from 'react-redux';
 // components
 import Label from '../components/label';
 import Iconify from '../components/iconify';
@@ -35,6 +36,8 @@ import { PAYMENTLISTHead, PAYMENTLISTToolbar } from '../sections/@dashboard/paym
 import PAYMENTLIST from '../_mock/payments';
 import { AuthContext } from '../context/AuthContext';
 import { db } from '../firebase-config';
+import UserDisabled from './UserDisabled';
+
 
 // ----------------------------------------------------------------------
 
@@ -110,10 +113,8 @@ export default function Payments() {
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       console.log(doc.data());
-      setPaymentList(e => 
-        [...e, doc.data()]
-      )
-    
+      setPaymentList((e) => [...e, doc.data()]);
+
       console.log('data', paymentList);
       setIsLoading(false);
     });
@@ -180,13 +181,14 @@ export default function Payments() {
   const filteredUsers = applySortFilter(paymentList, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
-
-  return !isLoading && currentUser ? (
+  const isDisabled = useSelector((state) => state.user.user.isDisabled);
+  return !isLoading ? (
     <>
       <Helmet>
         <title> Payments | TFConvert </title>
       </Helmet>
-
+    {  !isDisabled ? (
+      <>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -311,7 +313,6 @@ export default function Payments() {
           />
         </Card>
       </Container>
-
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -340,10 +341,10 @@ export default function Payments() {
           Delete
         </MenuItem>
       </Popover>
+      </>
+      ) : (<UserDisabled />) }
     </>
-  ) 
-   : (
+  ) : (
     <CircularProgress color="secondary" />
-  )
-
+  );
 }

@@ -54,7 +54,8 @@ export default function RegForm() {
       age,
       gender,
       regTime: date.toISOString(),
-      notifications: []
+      notifications: [],
+      isDisabled: false
     });
   };
   const handleLogin = async (email, password) => {

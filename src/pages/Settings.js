@@ -13,8 +13,7 @@ import Iconify from '../components/iconify';
 import '../styles/settings.css';
 import { db } from '../firebase-config';
 import { AuthContext } from '../context/AuthContext';
-
-
+import UserDisabled from './UserDisabled';
 
 // sections
 
@@ -28,7 +27,7 @@ export default function Settings() {
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdatingCN, setIsUpdatingCN] = useState(false);
   const [isUpdatingEmail, setIsUpdatingEmail] = useState(false);
-  const {currentUser} = useContext(AuthContext)
+  const { currentUser } = useContext(AuthContext);
   const handleCompanyNameUpdate = async () => {
     setIsUpdatingCN(true);
     if (companyName === null) {
@@ -45,28 +44,26 @@ export default function Settings() {
   };
   const handleEmailUpdate = async () => {
     setIsUpdatingEmail(true);
-     if (email === null) {
+    if (email === null) {
       alert('Please enter a new email');
       setIsUpdatingCN(false);
     } else {
       await updateDoc(userRef, {
-        email
-      }).then(() => {
-      
-      });
+        email,
+      }).then(() => {});
       await updateEmail(currentUser, email)
-      .then(() => {
-        setIsUpdatingEmail(false);
-        alert('Successfully Updated !');
-      })
-      .catch((error) => {
-        setIsUpdatingEmail(false);
-        console.log(error)
-        // An error occurred
-        // ...
-      });
-  }
-}
+        .then(() => {
+          setIsUpdatingEmail(false);
+          alert('Successfully Updated !');
+        })
+        .catch((error) => {
+          setIsUpdatingEmail(false);
+          console.log(error);
+          // An error occurred
+          // ...
+        });
+    }
+  };
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -74,95 +71,98 @@ export default function Settings() {
   const handleCloseMenu = () => {
     setOpen(null);
   };
-
+  const isDisabled = useSelector((state) => state.user.user.isDisabled);
   return (
     <>
       <Helmet>
         <title> Settings | TFConvert </title>
       </Helmet>
-
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Settings
-          </Typography>
-          {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+      {!isDisabled ? (
+        <Container>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+            <Typography variant="h4" gutterBottom>
+              Settings
+            </Typography>
+            {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
             CVS
           </Button> */}
-        </Stack>
+          </Stack>
 
-        <Grid item xs={12} sm={6} md={4}>
-          <article className="card">
-            <article className="grid gap-big">
-              <div className="title">
-                Payment Link
-                <p>Receive payments from your customers with this link.</p>
-                <p>To receive payments using this url, please follow this format.</p>
-                <p>https://pay-tfconvert.vercel.app/{user.id}/:your_customer_id/:amount_to_pay</p>
-              </div>
-              <fieldset>
-                <span>link</span>
-                <div className="input-group">
-                  <span>https://pay-tfconvert.vercel.app/</span>
-                  <input type="text" value={user.id} className="a-input" />
+          <Grid item xs={12} sm={6} md={4}>
+            <article className="card">
+              <article className="grid gap-big">
+                <div className="title">
+                  Payment Link
+                  <p>Receive payments from your customers with this link.</p>
+                  <p>To receive payments using this url, please follow this format.</p>
+                  <p>https://pay-tfconvert.vercel.app/{user.id}/:your_customer_id/:amount_to_pay</p>
                 </div>
-                <span style={{ marginTop: 10 }}>
-                  <a href={`https://pay-tfconvert.vercel.app/${user.id}/a/b`}>
-                    https://pay-tfconvert.vercel.app/{user.id}/a/b
-                  </a>
-                </span>
-              </fieldset>
-            </article>
-            <article className="grid gap-big">
-              <div className="title">Company</div>
+                <fieldset>
+                  <span>link</span>
+                  <div className="input-group">
+                    <span>https://pay-tfconvert.vercel.app/</span>
+                    <input type="text" value={user.id} className="a-input" />
+                  </div>
+                  <span style={{ marginTop: 10 }}>
+                    <a href={`https://pay-tfconvert.vercel.app/${user.id}/a/b`}>
+                      https://pay-tfconvert.vercel.app/{user.id}/a/b
+                    </a>
+                  </span>
+                </fieldset>
+              </article>
+              <article className="grid gap-big">
+                <div className="title">Company</div>
 
-              <fieldset>
-                <span>Company Name</span>
-                <input
-                  type="text"
-                  placeholder={user.company_name}
-                  className="a-input"
-                  onChange={(e) => setCompanyName(e.target.value)}
-                />
-                <br />
-                <Button
-                  variant="outlined"
-                  size="small"
-                  style={{ width: '10%', alignSelf: 'flex-end' }}
-                  onClick={handleCompanyNameUpdate}
-                >
-                  {isUpdatingCN ? <CircularProgress color="secondary" size={20} /> : 'Update'}
-                </Button>
-              </fieldset>
-              <fieldset>
-                <span>Company email</span>
-                <input
-                  type="text"
-                  placeholder={user.email}
-                  className="a-input"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <br />
-                <Button
-                  variant="outlined"
-                  size="small"
-                  style={{ width: '10%', alignSelf: 'flex-end' }}
-                  onClick={handleEmailUpdate}
-                >
-                  {isUpdatingEmail ? <CircularProgress color="secondary" size={20} /> : 'Update'}
-                </Button>
-              </fieldset>
+                <fieldset>
+                  <span>Company Name</span>
+                  <input
+                    type="text"
+                    placeholder={user.company_name}
+                    className="a-input"
+                    onChange={(e) => setCompanyName(e.target.value)}
+                  />
+                  <br />
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    style={{ width: '10%', alignSelf: 'flex-end' }}
+                    onClick={handleCompanyNameUpdate}
+                  >
+                    {isUpdatingCN ? <CircularProgress color="secondary" size={20} /> : 'Update'}
+                  </Button>
+                </fieldset>
+                <fieldset>
+                  <span>Company email</span>
+                  <input
+                    type="text"
+                    placeholder={user.email}
+                    className="a-input"
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <br />
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    style={{ width: '10%', alignSelf: 'flex-end' }}
+                    onClick={handleEmailUpdate}
+                  >
+                    {isUpdatingEmail ? <CircularProgress color="secondary" size={20} /> : 'Update'}
+                  </Button>
+                </fieldset>
+              </article>
+              <article className="grid gap-big">
+                <Link to="/auth/reset-password" style={{ textDecoration: 'none' }}>
+                  <Button variant="contained" style={{ width: '30%' }}>
+                    Change Password
+                  </Button>
+                </Link>
+              </article>
             </article>
-            <article className="grid gap-big">
-              <Link to="/auth/reset-password" style={{ textDecoration: 'none' }}>
-                <Button variant="contained" style={{ width: '30%' }}>
-                  Change Password
-                </Button>
-              </Link>
-            </article>
-          </article>
-        </Grid>
-      </Container>
+          </Grid>
+        </Container>
+      ) : (
+        <UserDisabled />
+      )}
     </>
   );
 }

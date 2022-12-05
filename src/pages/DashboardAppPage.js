@@ -9,6 +9,7 @@ import { Grid, Container, Typography, CircularProgress } from '@mui/material';
 
 // sections
 import { AppNewsUpdate, AppCurrentVisits, AppWebsiteVisits, AppWidgetSummary } from '../sections/@dashboard/app';
+import UserDisabled from './UserDisabled';
 
 
 // ----------------------------------------------------------------------
@@ -16,8 +17,12 @@ import { AppNewsUpdate, AppCurrentVisits, AppWebsiteVisits, AppWidgetSummary } f
 export default function DashboardAppPage() {
   const theme = useTheme();
    const user = useSelector((state) => state.user.user);
-
-  return  (
+    const isDisabled = useSelector((state) => state.user.user.isDisabled);
+   
+  return  ( 
+    
+    !isDisabled ?
+ (
     <>
       <Helmet>
         <title> Dashboard | TFConvert </title>
@@ -118,6 +123,7 @@ export default function DashboardAppPage() {
         </Grid>
       </Container>
     </>
-  )
+ ) : (<UserDisabled />) 
+  )   
    
 }
