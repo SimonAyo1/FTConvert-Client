@@ -8,7 +8,7 @@ import './wallet.css';
 export default function Wallet() {
    const user = useSelector((state) => state.user.user);
    
-   console.log("wallet", user)
+
   return (
     <>
       <div className="container">

@@ -27,8 +27,7 @@ export default function VerifyEmail(props) {
   const handleVerification = async () => {
     setVerifyText("Resend")
     await sendEmailVerification(auth.currentUser).then((e) => {
-      console.log('sent verification link ...');
-      console.log(e);
+   
     });
   };
  

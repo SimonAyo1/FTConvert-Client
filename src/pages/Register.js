@@ -61,7 +61,7 @@ export default function Register() {
               Hi, Let's Get You Registered !
             </Typography>
             <img
-              src="https://img.freepik.com/free-photo/fun-3d-illustration-american-referee_183364-80815.jpg?w=740&t=st=1668888763~exp=1668889363~hmac=8a48cdab34b8ba4d017397d9edd196b9666dd756248fd843b61f650dfbfed758"
+              src="https://img.freepik.com/free-vector/mobile-login-concept-illustration_114360-83.jpg?w=740&t=st=1670347211~exp=1670347811~hmac=3c499be808b828276ea6c76225394a05632089acc9da9187a11ed2dafa4f3370"
               alt="login"
             />
           </StyledSection>

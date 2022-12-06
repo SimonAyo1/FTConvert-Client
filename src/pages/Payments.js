@@ -103,7 +103,7 @@ export default function Payments() {
   const fetchData = async (id) => {
     const req = query(collection(db, 'users_customer_payments'), where('userId', '==', `${id}`));
     const querySnapshot = await getDocs(req).catch((e) => {
-      console.log(e);
+ 
       setIsLoading(false);
     });
     if (querySnapshot.empty) {
@@ -112,10 +112,10 @@ export default function Payments() {
     }
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
-      console.log(doc.data());
+    
       setPaymentList((e) => [...e, doc.data()]);
 
-      console.log('data', paymentList);
+
       setIsLoading(false);
     });
   };

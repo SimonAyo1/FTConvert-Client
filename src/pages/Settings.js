@@ -58,7 +58,7 @@ export default function Settings() {
         })
         .catch((error) => {
           setIsUpdatingEmail(false);
-          console.log(error);
+         
           // An error occurred
           // ...
         });

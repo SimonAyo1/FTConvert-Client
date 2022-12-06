@@ -29,7 +29,7 @@ export default function LoginForm() {
       })
       .catch((err) => {
         setIsLoading(false);
-        console.log(err.code);
+       
         switch (err.code) {
           case 'auth/network-request-failed':
             setError("Can't connect to the internet !");

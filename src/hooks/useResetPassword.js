@@ -25,7 +25,7 @@ const useResetPassword = (email = null, user = null, newPassword = null, type) =
         })
         .catch((error) => {
           setError(error.message);
-          console.log(error);
+     
         });
         break;
     default:

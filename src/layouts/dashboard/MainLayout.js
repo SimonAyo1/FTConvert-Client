@@ -57,7 +57,7 @@ export default function MainLayout() {
     const fetchData = async (id) => {
       const req = query(collection(db, 'users'), where('userId', '==', `${id}`));
       const querySnapshot = await getDocs(req).catch((e) => {
-        console.log(e);
+       
       });
       querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
@@ -83,7 +83,7 @@ export default function MainLayout() {
             isDisabled: doc.data().isDisabled,
           })
         );
-        console.log(doc.data());
+       
        
         setIsLoading(false);
       });
@@ -92,7 +92,7 @@ export default function MainLayout() {
     useEffect(() => {
       fetchData(currentUser.uid);
     }, []);
-  console.log("main main")
+ 
   const [open, setOpen] = useState(false);
 
   return currentUser ? (

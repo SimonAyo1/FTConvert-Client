@@ -72,7 +72,7 @@ export default function RegForm() {
       .then((response) => {
         setIsLoading(false);
 
-        console.log(response);
+     
         sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken);
         addUserData(response.user.uid);
         return handleLogin(email, password);
