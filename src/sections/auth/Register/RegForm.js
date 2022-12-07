@@ -47,7 +47,7 @@ export default function RegForm() {
       company: companyName,
       email,
       wallets: [],
-      payment_url: `https://www.tfconvert.com/pay/${id.slice(0, 7)}`,
+      payment_url: `https://www.pay-tfconvert.vercel.app/${id.slice(0, 7)}`,
       balance: 0,
       customer: 0,
       country,
@@ -55,7 +55,7 @@ export default function RegForm() {
       gender,
       regTime: date.toISOString(),
       notifications: [],
-      isDisabled: false
+      isDisabled: false,
     });
   };
   const handleLogin = async (email, password) => {
