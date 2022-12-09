@@ -81,6 +81,7 @@ export default function MainLayout() {
             wallets: doc.data().wallets,
             dId: doc.id,
             isDisabled: doc.data().isDisabled,
+            transactionFee: doc.data().transactionFee
           })
         );
        

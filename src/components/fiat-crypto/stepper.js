@@ -61,8 +61,9 @@ export default function FTCStepper() {
         cryptocurrency: coin,
         status: 'pending',
         wallet_address: address,
-        price: 10,
+        price: (amount * rate),
         time: date.toUTCString(),
+        transactionFee: (user.transactionFee / 100) * (amount * rate),
       })
         .then((e) => {
           alert('successfuly requested');
@@ -209,12 +210,9 @@ export default function FTCStepper() {
                       label="Crypto"
                       onChange={handleChange}
                     >
-                    <MenuItem value={null}>Crypto</MenuItem>
+                      <MenuItem value={null}>Crypto</MenuItem>
                       {acceptedCryptos.map((crypto) => (
-                        <MenuItem
-                         value={crypto.name}
-                         onClick={() => setRate(crypto.rate)}
-                        >
+                        <MenuItem value={crypto.name} onClick={() => setRate(crypto.rate)}>
                           {crypto.name}
                         </MenuItem>
                       ))}
@@ -241,6 +239,10 @@ export default function FTCStepper() {
                 <div className="receipt__list-row">
                   <dt className="receipt__item">Cost</dt>
                   <dd className="receipt__cost">${amount * rate}</dd>
+                </div>
+                <div className="receipt__list-row">
+                  <dt className="receipt__item">Transaction Fee</dt>
+                  <dd className="receipt__cost">${(user.transactionFee / 100) * (amount * rate)}</dd>
                 </div>
                 <div className="receipt__list-row">
                   <dt className="receipt__item">Wallet</dt>

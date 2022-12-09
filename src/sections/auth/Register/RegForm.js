@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 // @mui
@@ -10,18 +10,18 @@ import {
   TextField,
   Checkbox,
   CircularProgress,
-  Alert,
   useMediaQuery,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
 } from '@mui/material';
-import { collection, addDoc } from 'firebase/firestore';
+import { MuiTelInput, matchIsValidTel } from 'mui-tel-input';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { LoadingButton } from '@mui/lab';
 import countries from './countries.json';
-import { app, db } from '../../../firebase-config';
+import { db } from '../../../firebase-config';
 
 // components
 import Iconify from '../../../components/iconify';
@@ -31,8 +31,8 @@ import Label from '../../../components/label/Label';
 export default function RegForm() {
   const lg = useMediaQuery('(min-width:601px)');
   const navigate = useNavigate();
-  const [age, setAge] = useState(null);
-  const [gender, setGender] = useState(null);
+  const [fullName, setFullName] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState('+46');
   const [country, setCountry] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
@@ -40,7 +40,25 @@ export default function RegForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [companyName, setCompanyName] = useState('');
   const [error, setError] = useState('');
-  const date = new Date()
+  const [transactionFee, setTransactionFee] = useState(0);
+
+  const FetchTxFee = async () => {
+    const querySnapshot = await getDocs(collection(db, 'general-settings'));
+    querySnapshot.forEach((doc) => {
+      setTransactionFee(doc.data().transactionFee);
+      console.log(doc.data().transactionFee);
+    });
+  };
+
+  useEffect(() => {
+    FetchTxFee();
+  }, []);
+
+  const date = new Date();
+  const handlePhoneNumber = (newValue) => {
+    setPhoneNumber(newValue);
+  };
+
   const addUserData = (id) => {
     addDoc(collection(db, 'users'), {
       userId: id,
@@ -51,11 +69,12 @@ export default function RegForm() {
       balance: 0,
       customer: 0,
       country,
-      age,
-      gender,
+      fullName,
+      phoneNumber,
       regTime: date.toISOString(),
       notifications: [],
       isDisabled: false,
+      transactionFee,
     });
   };
   const handleLogin = async (email, password) => {
@@ -68,41 +87,55 @@ export default function RegForm() {
   const handleRegister = async () => {
     setIsLoading(true);
     const authentication = getAuth();
-    await createUserWithEmailAndPassword(authentication, email, password)
-      .then((response) => {
-        setIsLoading(false);
+    if (companyName === '' || email === '' || fullName === '' || country === null) {
+      setError('Some form field(s) are empty !');
+      setIsLoading(false);
+    } else if (!matchIsValidTel(phoneNumber)) {
+      setError('Invalid Phone Number');
+      setIsLoading(false);
+    } else {
+      await createUserWithEmailAndPassword(authentication, email, password)
+        .then((response) => {
+          setIsLoading(false);
 
-     
-        sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken);
-        addUserData(response.user.uid);
-        return handleLogin(email, password);
-      })
+          sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken);
+          addUserData(response.user.uid);
+          return handleLogin(email, password);
+        })
 
-      .catch((err) => {
-        setIsLoading(false);
-        switch (err.code) {
-          case 'auth/email-already-in-use':
-            setError('Email already in use');
-            break;
-          case 'auth/invalid-email':
-            setError('Invalid Email');
-            break;
-          case 'auth/weak-password':
-            setError('Weak Password');
-            break;
-          default:
-        }
-      });
+        .catch((err) => {
+          setIsLoading(false);
+          switch (err.code) {
+            case 'auth/email-already-in-use':
+              setError('Email already in use');
+              break;
+            case 'auth/invalid-email':
+              setError('Invalid Email');
+              break;
+            case 'auth/weak-password':
+              setError('Weak Password');
+              break;
+            default:
+          }
+        });
+    }
   };
 
   return (
     <>
+      {error && (
+        <Label color="error" style={{ marginBottom: 20 }}>
+          {error}
+        </Label>
+      )}
+
       <Stack direction={lg ? 'row' : 'column'} spacing={3}>
-        {error && <Label color="error">{error}</Label>}
         <Stack spacing={3}>
           <TextField
             name="email"
             label="Email address"
+            type="email"
+            required
             onChange={(e) => {
               setEmail(e.target.value);
             }}
@@ -110,6 +143,8 @@ export default function RegForm() {
           <TextField
             name="company"
             label="Company's Name"
+            type="text"
+            required
             onChange={(e) => {
               setCompanyName(e.target.value);
             }}
@@ -128,49 +163,30 @@ export default function RegForm() {
                 </InputAdornment>
               ),
             }}
+            required
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
         </Stack>
         <Stack spacing={3}>
-          <FormControl fullWidth style={{ width: lg ? 210 : 'inherit' }}>
-            <InputLabel id="demo-simple-select-label">Age Group</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={age}
-              label="Age Group"
-              onChange={(e) => {
-                setAge(e.target.value);
-              }}
-            >
-              <MenuItem value="20 - 25">20 - 25</MenuItem>
-              <MenuItem value="26 - 30">26 - 30</MenuItem>
-              <MenuItem value="31 - 35">31 - 35</MenuItem>
-              <MenuItem value="36 - 40">36 - 40</MenuItem>
-              <MenuItem value="41 - 45">41 - 45</MenuItem>
-              <MenuItem value="45 - 50">45 - 50</MenuItem>
-              <MenuItem value="51 - 60">51 - 60</MenuItem>
-              <MenuItem value="61 - 70">61 - 70</MenuItem>
-              <MenuItem value="70 above">70 above</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl fullWidth style={{ width: lg ? 210 : 'inherit' }}>
-            <InputLabel id="demo-simple-select-label">Gender</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={gender}
-              label="Gender"
-              onChange={(e) => {
-                setGender(e.target.value);
-              }}
-            >
-              <MenuItem value="Male">Male</MenuItem>
-              <MenuItem value="Female">Female</MenuItem>
-            </Select>
-          </FormControl>
+          <TextField
+            name="Full Name"
+            label="Full Name"
+            required
+            onChange={(e) => {
+              setFullName(e.target.value);
+            }}
+          />
+          {/* <TextField
+            name="Phone Number"
+            label="Phone Number"
+            type="tel"
+            onChange={(e) => {
+              setPhoneNumber(e.target.value);
+            }}
+          /> */}
+          <MuiTelInput value={phoneNumber} required onChange={handlePhoneNumber} />
           <FormControl fullWidth style={{ width: lg ? 210 : 'inherit' }}>
             <InputLabel id="demo-simple-select-label">Country</InputLabel>
             <Select
@@ -178,6 +194,7 @@ export default function RegForm() {
               id="demo-simple-select"
               value={country}
               label="Country"
+              required
               onChange={(e) => {
                 setCountry(e.target.value);
               }}
