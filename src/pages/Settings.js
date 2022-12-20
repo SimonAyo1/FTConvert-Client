@@ -75,7 +75,7 @@ export default function Settings() {
   return (
     <>
       <Helmet>
-        <title> Settings | TFConvert </title>
+        <title> Settings | FTconvert </title>
       </Helmet>
       {!isDisabled ? (
         <Container>
@@ -95,17 +95,17 @@ export default function Settings() {
                   Payment Link
                   <p>Receive payments from your customers with this link.</p>
                   <p>To receive payments using this url, please follow this format.</p>
-                  <p>https://pay-tfconvert.vercel.app/{user.id}/:your_customer_id/:amount_to_pay</p>
+                  <p>https://pay-ftconvert.vercel.app/{user.id}/:your_customer_id/:amount_to_pay</p>
                 </div>
                 <fieldset>
                   <span>link</span>
                   <div className="input-group">
-                    <span>https://pay-tfconvert.vercel.app/</span>
+                    <span>https://pay-ftconvert.vercel.app/</span>
                     <input type="text" value={user.id} className="a-input" />
                   </div>
                   <span style={{ marginTop: 10 }}>
-                    <a href={`https://pay-tfconvert.vercel.app/${user.id}/a/b`}>
-                      https://pay-tfconvert.vercel.app/{user.id}/a/b
+                    <a href={`https://pay-ftconvert.vercel.app/${user.id}/a/b`}>
+                      https://pay-ftconvert.vercel.app/{user.id}/a/b
                     </a>
                   </span>
                 </fieldset>

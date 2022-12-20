@@ -48,14 +48,14 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | TFConvert </title>
+        <title> Login | FTconvert </title>
       </Helmet>
 
       <StyledRoot>
         {mdUp && (
           <StyledSection>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back To TFConvert
+              Hi, Welcome Back To FTconvert
             </Typography>
             <img
               src="https://img.freepik.com/free-vector/key-concept-illustration_114360-6305.jpg?w=740&t=st=1670233288~exp=1670233888~hmac=cbd37c9c9d3458bd8e562da023105a4c45fb15c4198805d8aa10736cb5e34390"
@@ -67,7 +67,7 @@ export default function LoginPage() {
         <Container maxWidth="sm">
           <StyledContent>
             <Typography variant="h4" gutterBottom>
-              Sign in to TFConvert
+              Sign in to FTconvert
             </Typography>
 
             <Typography variant="body2" sx={{ mb: 3 }}>

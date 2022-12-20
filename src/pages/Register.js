@@ -51,7 +51,7 @@ export default function Register() {
   return (
     <>
       <Helmet>
-        <title> Register | TFConvert </title>
+        <title> Register | FTconvert </title>
       </Helmet>
 
       <StyledRoot>
@@ -70,7 +70,7 @@ export default function Register() {
         <Container maxWidth="sm">
           <StyledContent>
             <Typography variant="h4" gutterBottom>
-              Sign up for TFConvert
+              Sign up for FTconvert
             </Typography>
 
             <Typography variant="body2" sx={{ mb: 3 }}>

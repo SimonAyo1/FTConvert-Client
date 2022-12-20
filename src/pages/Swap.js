@@ -23,7 +23,7 @@ export default function Swap() {
   return (
     <>
       <Helmet>
-        <title> Swap | TFConvert </title>
+        <title> Swap | FTconvert </title>
       </Helmet>
       {!isDisabled ? (
         <>

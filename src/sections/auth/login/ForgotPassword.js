@@ -79,7 +79,7 @@ export default function ForgotPassword() {
   return (
     <>
       <Helmet>
-        <title> Reset Password | TFConvert </title>
+        <title> Reset Password | FTconvert </title>
       </Helmet>
 
       <StyledRoot>
@@ -102,7 +102,6 @@ export default function ForgotPassword() {
             </Typography>
 
             <Typography variant="body2" sx={{ mb: 3 }}>
-            
               <Link
                 variant="subtitle2"
                 style={{ cursor: 'pointer' }}

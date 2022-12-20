@@ -19,13 +19,10 @@ export default function DashboardAppPage() {
    const user = useSelector((state) => state.user.user);
     const isDisabled = useSelector((state) => state.user.user.isDisabled);
    
-  return  ( 
-    
-    !isDisabled ?
- (
+  return !isDisabled ? (
     <>
       <Helmet>
-        <title> Dashboard | TFConvert </title>
+        <title> Dashboard | FTconvert </title>
       </Helmet>
 
       <Container maxWidth="xl">
@@ -123,7 +120,8 @@ export default function DashboardAppPage() {
         </Grid>
       </Container>
     </>
- ) : (<UserDisabled />) 
-  )   
+  ) : (
+    <UserDisabled />
+  );   
    
 }
